@@ -1,0 +1,39 @@
+CFLAGS=`allegro-config --cflags`
+#lista de archivos de entrada llamada 'OBJECT', luego lo tomaremos como referencia
+HLINE=---------------------------------------------------
+PROGRAM=environment
+OBJECT=Common.o \
+	Enviroment.o \
+	Fire.o \
+	Profile.o \
+	Rain.o \
+	Sky.o \
+	Smoke.o \
+	Snow.o \
+	Thunder.o \
+	Video.o \
+	Water.o \
+	Main.o \
+	TurboFX.o
+
+#esta es una regla de sufijo, todos los archivos con esta entrada se compilan de esta forma:
+# El simbolo $< se reemplaza por el archivo de entrada (ruta/????.c) y $@ por la salida
+%.o : %.c
+	@echo Compiling $<...
+	@gcc $(CFLAGS) -c $< -o $@
+
+%.o : %.asm
+	@echo Assembling $<...
+	@nasm -felf $< -o $@
+
+all : $(PROGRAM)
+
+$(PROGRAM) : $(OBJECT)
+	@echo $(HLINE)
+	@echo Linking $(PROGRAM)...
+	@gcc `allegro-config --libs` -o $(PROGRAM) $(OBJECT)
+	@echo $(HLINE)
+
+clean :
+	@echo Cleaning project...
+	@rm -f $(OBJECT) $(PROGRAM)
